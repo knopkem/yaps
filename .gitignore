@@ -1,0 +1,9 @@
+.*.swp
+*~
+.DS_Store
+build
+buildx86
+buildx64
+*.user
+.cproject
+.project
