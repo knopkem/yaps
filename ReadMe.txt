@@ -1,7 +1,7 @@
 A flexible photo sorting tool that uses the EXIF information of your photos and videos to copy or move them into a structured folder hierarchy.
 
 PURPOSE
-If you are like me and have a heap of photos and videos in randomly named folders laying on your hard disk this tool might help you out. It takes your photos and nicely sorts them into a new folder structure auto generated on the criteria you chose. For example like this:
+If you are like me and have a heap of photos and videos in randomly named folders laying on your hard disk this tool might be something for you  (provided you don't like it that way). It takes your photos and nicely sorts them into a new folder structure auto generated on the criteria you chose. For example like this:
 
 year/month/timestamp.jpg 
 
