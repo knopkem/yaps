@@ -1,4 +1,4 @@
-A  photo sorter that uses the exif information of your photos and videos to store them into a structured folder hierarchy.
+A flexible photo sorter tool that uses the exif information of your photos and videos to store them into a structured folder hierarchy.
 It uses the following projects behind: exiv2 and exiftool.
 
 BUILD INSTRUCTIONS
