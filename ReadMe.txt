@@ -5,7 +5,7 @@ If you are like me and have a heap of photos and videos in randomly named folder
 
 year/month/timestamp.jpg 
 
-Of course the structure can be customized to your needs. Optionally all duplicate files can be removed which helps reducing waste of disk space.
+Of course the structure can be customized to your needs. Optionally duplicate files can be removed.
 
 FEATURES
 * highly customizable folder structure
@@ -13,6 +13,9 @@ FEATURES
 * fix duplicates based on md5sums
 * fix file name clashes (auto rename)
 * cross-platform ready (linux, windows, mac) 
+
+BINARIES
+* grab them here: http://sourceforge.net/projects/yapsyetanotherphotosorter
 
 BUILD INSTRUCTIONS
 
@@ -27,7 +30,8 @@ Steps:
 * build
 
 NOTES
-* the tool uses the following projects behind: exiv2 and exiftool. Credits go there.
+The tool uses the following projects behind: exiv2 (http://www.exiv2.org) and exiftool (http://www.sno.phy.queensu.ca/~phil/exiftool). 
+Credits go there.
 
 USAGE
 * you need exiv2 AND exiftool available (either from path or copied into the bin folder)
