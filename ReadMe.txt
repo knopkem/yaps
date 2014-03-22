@@ -8,10 +8,10 @@ year/month/timestamp.jpg
 Of course the structure can be customized to your needs. Optionally duplicate files can be removed.
 
 FEATURES
+* parses images for: create date and time, camera model and make, media type (mime type)
 * highly customizable folder structure
-* available EXIF meta data: create date and time, camera model and make, media type (mime type)
-* fix duplicates based on md5sums
-* fix file name clashes (auto rename)
+* fixes duplicates based on md5sums
+* fixes file name clashes (auto rename)
 * cross-platform ready (linux, windows, mac) 
 
 BINARIES
