@@ -2,7 +2,7 @@ set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION "${BIN_INSTALL_DIR}")
 include(InstallRequiredSystemLibraries)
 
 SET (IAPPS 
-    "photomover" 
+    "yaps" 
     )
 
 FOREACH( APP_NAME ${IAPPS} )
