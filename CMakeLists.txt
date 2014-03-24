@@ -188,7 +188,7 @@ elseif(APPLE)
 elseif(UNIX)
      SET (CPACK_GENERATOR "DEB")
      set(CPACK_PACKAGING_INSTALL_PREFIX "/tmp")
-     set(CPACK_DEBIAN_PACKAGE_DEPENDS " libc6 (>= 2.3.1-6), libqt4-xml,libqt4-network,libqtgui4, libqt4-sql, libqt4-sql-sqlite, exiv2, libimage-exiftool-perl")
+     set(CPACK_DEBIAN_PACKAGE_DEPENDS " libc6 (>= 2.3.1-6), libqtgui4, exiv2, libimage-exiftool-perl")
      set(CPACK_DEBIAN_PACKAGE_DESCRIPTION "Description for yaps
  A simple tool to move your photos or videos into a directory structure created
  based on the EXIF information (creation date/time) of those files")
