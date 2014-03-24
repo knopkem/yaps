@@ -7,6 +7,8 @@
 class BaseLookup
 {
 public:
+    BaseLookup() {}
+    virtual ~BaseLookup() {}
     virtual QString processName() = 0;
     virtual QStringList processParams() = 0;
     virtual QString fileName() = 0;

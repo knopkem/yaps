@@ -193,15 +193,13 @@ QGroupBox* MainWindow::createFolderGroup()
     QHBoxLayout* hbox = new QHBoxLayout;
     hbox->addWidget(d->patternLineEdit);
     hbox->addWidget(d->editFolderPb);
-
+    
     QFormLayout* formLayoutFolderPattern = new QFormLayout;
     formLayoutFolderPattern->addRow("Pattern:", hbox);
     formLayoutFolderPattern->addRow("Example:", d->exampleLineEdit);
-
-    QVBoxLayout* vboxFolderPattern = new QVBoxLayout;
-    vboxFolderPattern->addLayout(formLayoutFolderPattern);
-
-    folderGroupBox->setLayout(vboxFolderPattern);
+    formLayoutFolderPattern->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+    
+    folderGroupBox->setLayout(formLayoutFolderPattern);
     return folderGroupBox;
 }
 
@@ -225,11 +223,9 @@ QGroupBox* MainWindow::createFileGroup()
     QFormLayout* formLayoutFilePattern = new QFormLayout;
     formLayoutFilePattern->addRow("Pattern:", hbox);
     formLayoutFilePattern->addRow("Example:", d->exampleFileLineEdit);
-
-    QVBoxLayout* vboxFileOptions = new QVBoxLayout;
-    vboxFileOptions->addLayout(formLayoutFilePattern);
-
-    fileGroupBox->setLayout(vboxFileOptions);
+    formLayoutFilePattern->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+    
+    fileGroupBox->setLayout(formLayoutFilePattern);
     return fileGroupBox;
 }
 
