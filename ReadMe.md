@@ -1,6 +1,7 @@
 # YAPS - Yet Another Photo Sorter
 
 A flexible photo sorting tool that uses the EXIF information of your photos and videos to copy or move them into a structured folder hierarchy.
+Download installer:  http://sourceforge.net/projects/yapsyetanotherphotosorter
 
 # Purpose
 
