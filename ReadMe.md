@@ -24,12 +24,12 @@ Of course the structure can be customized to your needs. Optionally duplicate fi
 
 # Build Instructions
 
-## Requirements:
+## Requirements
 * CMAKE
 * Essential build tools
 * Qt4
 
-## Steps:
+## Steps
 * compile or install Qt library + add bin directory to path
 * run cmake on the project, this should detect Qt
 * build
