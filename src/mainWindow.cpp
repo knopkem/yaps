@@ -26,6 +26,7 @@ public:
     QPushButton*    editFolderPb;
 
     QCheckBox*      fixDuplicatesCheckBox;
+    QCheckBox*      copyDuplicatesCheckBox;
     QLineEdit*      patternFileLineEdit;
     QLineEdit*      exampleFileLineEdit;
     QPushButton*    editFilePb;
@@ -66,6 +67,7 @@ MainWindow::MainWindow() : d(new MainWindowPrivate)
     // Create connections
     QObject::connect(d->sourceButton, SIGNAL(clicked()), this, SLOT(onSourceButtonClicked()));
     QObject::connect(d->targetButton, SIGNAL(clicked()), this, SLOT(onTargetButtonClicked()));
+    QObject::connect(d->fixDuplicatesCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onDetermineState()));
 
     QObject::connect(d->editFolderPb, SIGNAL(clicked()), this, SLOT(editFolderPattern()));
     QObject::connect(d->editFilePb, SIGNAL(clicked()), this, SLOT(editFilePattern()));
@@ -97,7 +99,7 @@ MainWindow::MainWindow() : d(new MainWindowPrivate)
 
     evaluateFolderStructure();
     evaluateFilenameStructure();
-
+    onDetermineState();
 }
 
 //--------------------------------------------------------------------------------------
@@ -164,12 +166,16 @@ QGroupBox* MainWindow::createTargetGroup()
     d->targetButton = new QPushButton(tr("Choose target folder"));
     d->targetButton->setMaximumWidth(200);
 
-    d->fixDuplicatesCheckBox = new QCheckBox(tr("Fix Duplicates"));
+    d->fixDuplicatesCheckBox = new QCheckBox(tr("Fix duplicates"));
     d->fixDuplicatesCheckBox->setChecked(true);
+
+    d->copyDuplicatesCheckBox = new QCheckBox(tr("Copy to duplicates folder"));
+    d->copyDuplicatesCheckBox->setChecked(false);
 
     QHBoxLayout *hboxTarget = new QHBoxLayout;
     hboxTarget->addWidget(d->targetButton);
     hboxTarget->addWidget(d->fixDuplicatesCheckBox);
+    hboxTarget->addWidget(d->copyDuplicatesCheckBox);
 
     QVBoxLayout *vboxTarget = new QVBoxLayout;
     vboxTarget->addWidget(d->targetLineEdit);
@@ -348,6 +354,7 @@ void MainWindow::evaluateFileOptions()
 {
      d->currentOptions.traverseSubdirectories = d->traverseCheckBox->isChecked();
      d->currentOptions.fixDuplicates = d->fixDuplicatesCheckBox->isChecked();
+     d->currentOptions.copyDuplicates = d->copyDuplicatesCheckBox->isChecked();
 }
 
 //--------------------------------------------------------------------------------------
@@ -360,6 +367,8 @@ void MainWindow::editFolderPattern()
     items << PatternFormat::DelimiterUnderscore;
     items << PatternFormat::DelimiterDot;
     items << PatternFormat::DelimiterHash;
+    items << PatternFormat::DelimiterTilde;
+    items << PatternFormat::DelimiterWhiteSpace;
     items << PatternFormat::CameraMake;
     items << PatternFormat::CameraModel;
     items << PatternFormat::MediaType;
@@ -371,7 +380,10 @@ void MainWindow::editFolderPattern()
     items << PatternFormat::DayS;
     items << PatternFormat::DayL;
 
-    ComposerDlg composer(items, d->folderPatternList);
+    QString description = tr("Usage: Compose your desired folder structure by clicking on the items in the selection list.\n"
+        "Inserting a subdirectory element will mark the beginning of a new sub folder.");
+
+    ComposerDlg composer(items, d->folderPatternList, description);
     composer.setModal(true);
     int ret = composer.exec();
 
@@ -394,6 +406,8 @@ void MainWindow::editFilePattern()
     items << PatternFormat::DelimiterUnderscore;
     items << PatternFormat::DelimiterDot;
     items << PatternFormat::DelimiterHash;
+    items << PatternFormat::DelimiterTilde;
+    items << PatternFormat::DelimiterWhiteSpace;
     items << PatternFormat::CameraMake;
     items << PatternFormat::CameraModel;
     items << PatternFormat::MediaType;
@@ -409,7 +423,9 @@ void MainWindow::editFilePattern()
     items << PatternFormat::Second;
     items << PatternFormat::Filename;
 
-    ComposerDlg composer(items, d->filePatternList);
+    QString description = tr("Usage: Compose your desired filename pattern by clicking on the items in the selection list.");
+
+    ComposerDlg composer(items, d->filePatternList, description);
     composer.setModal(true);
     int ret = composer.exec();
 
@@ -468,8 +484,15 @@ void MainWindow::writeSettings()
 {
     d->settings->setValue("SourceFolder", d->sourceLineEdit->text());
     d->settings->setValue("TargetFolder", d->targetLineEdit->text());
-    //d->settings->setValue("folderPattern", d->folderPatternList);
     d->settings->sync();
+}
+
+//--------------------------------------------------------------------------------------
+
+void MainWindow::onDetermineState()
+{
+    bool enabled = d->fixDuplicatesCheckBox->isChecked();
+    d->copyDuplicatesCheckBox->setEnabled(enabled);
 }
 
 //--------------------------------------------------------------------------------------

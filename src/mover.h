@@ -28,6 +28,7 @@ public:
 
     bool traverseSubdirectories;
     bool fixDuplicates;
+    bool copyDuplicates;
     eFileOperation fileOp;
 };
 

@@ -22,14 +22,14 @@ void SimpleLog::log( eLogLevel level, const QString& msg )
 {
     QMutexLocker locker(&mutex);
 
-    std::cout << msg.toStdString() << std::endl;
+    //std::cout << msg.toStdString() << std::endl;
 
     QString outMsg = levelToString(level) + " (" + QDateTime::currentDateTime().toString("yyyy/MM/dd-hh:mm:ss") + ") " + msg;
 
     if (logFileLocation.isEmpty()) {
         return;
     }
-    *m_OutputStream << msg
+    *m_OutputStream << outMsg
 
 #ifdef Q_OS_WIN
         << '\r'  // Use standard windows line endings

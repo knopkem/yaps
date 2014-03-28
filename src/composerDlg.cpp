@@ -15,23 +15,28 @@ public:
     QList<PatternFormat::eTag> selection;
     QLineEdit* pattern;
     QLineEdit* example;
+    QLabel* description;
 };
 
 //--------------------------------------------------------------------------------------
 
 ComposerDlg::ComposerDlg( QList<PatternFormat::eTag> items, QList<PatternFormat::eTag> selectedItems, 
-    QWidget* parent /*= NULL*/ ): QDialog(parent), d (new ComposerDlgPrivate)
+   const QString& labelText, QWidget* parent /*= NULL*/ ): QDialog(parent), d (new ComposerDlgPrivate)
 {
     setWindowFlags( Qt::Dialog | Qt::WindowTitleHint );
     this->setMinimumWidth(800);
 
+    d->description = new QLabel;
+    d->description->setText(labelText);
     d->collection = new QListWidget;
     d->collection->setSelectionMode(QAbstractItemView::SingleSelection);
 
     d->selection = selectedItems;
 
     d->pattern = new QLineEdit;
+    d->pattern->setReadOnly(true);
     d->example = new QLineEdit;
+    d->example->setReadOnly(true);
 
     // fill collection
     foreach(PatternFormat::eTag item, items) {
@@ -56,6 +61,7 @@ ComposerDlg::ComposerDlg( QList<PatternFormat::eTag> items, QList<PatternFormat:
     hbox->addWidget(minusButton);
 
     QVBoxLayout* vbox = new QVBoxLayout;
+    vbox->addWidget(d->description);
     vbox->addWidget(d->collection);
     vbox->addLayout(hbox);
     vbox->addWidget(d->example);

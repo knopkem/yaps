@@ -32,6 +32,7 @@ class MoverPrivate
 public:
     QString appPath;
     QString currentTarget;
+    QString sourcePath;
     QHash<QString, QSet<QString> > md5HashSet;
     QHash<QString,QString> fileHash;
     ExifWrapper* wrapper;
@@ -63,6 +64,7 @@ Mover::~Mover()
 bool Mover::performOperations(const QString &source, const QString &target, const FileOptions& options, const PatternFormat& format)
 {
     this->reset();
+    d->sourcePath = source;
 
     // make sure the target folder exists
     if (!makedir(target) ) {
@@ -160,6 +162,8 @@ QList<ExifData> Mover::parseFiles( const QStringList& files, const FileOptions& 
     foreach(const QString& path, files) {
         ExifData data;
         data.FilePath = path;
+        QFileInfo info(path);
+        data.AbsolutePath = info.absolutePath();
         parsedData << data;
     }
     
@@ -222,10 +226,12 @@ bool Mover::fileOperation(const ExifData &data, const QString &target, const Fil
     }
 
     if (data.CreateDate.isInvalid()) {
-        QString noexif = target + "/" + NOEXIFDATA_FOLDER;
-        makedir(noexif);
         qWarning() << "invalid creation date, or no exif meta data present" << data.FilePath;
-        return copyOrMoveFile(data.FilePath, noexif + "/" + data.FileName, options);
+        QString relativePath = data.AbsolutePath;
+        relativePath.remove(d->sourcePath);
+        QString folder = target + "/" + NOEXIFDATA_FOLDER + "/" + relativePath;
+        makedir(folder);
+        return copyOrMoveFile(data.FilePath, folder + "/" + data.FileName + "." + data.Extention, options);
     }
 
     d->report.FilesWithExif++;
@@ -238,7 +244,15 @@ bool Mover::fileOperation(const ExifData &data, const QString &target, const Fil
         initializeFolder(finalTarget);
         if (hasDuplicateHash(finalTarget, data.FilePath)) {
             d->report.Duplicates++;
-            qWarning() << data.FileName << ", file already exists in target location" << finalTarget << " skipped";
+            qWarning() << data.FileName << ", file already exists in target location" << finalTarget;
+            if (options.copyDuplicates) {
+                QString relativePath = data.AbsolutePath;
+                relativePath.remove(d->sourcePath);
+                QString folder = target + "/" + DUPLICATES_FOLDER + "/" + relativePath;
+                qWarning() << "copy " << folder;
+                makedir(folder);
+                return copyOrMoveFile(data.FilePath, folder + "/" + data.FileName + "." + data.Extention, options);
+            }
             return true;
         }
     }
@@ -301,7 +315,7 @@ bool Mover::makedir( const QString& path )
         return true;
     }
 
-    if (!dir.mkdir(path)) {
+    if (!dir.mkpath(path)) {
         qWarning() << "Could not create directory: " << path;
         return false;
     }
@@ -431,6 +445,13 @@ QString Mover::tagToValue(PatternFormat::eTag tag, const ExifData& data)
     case PatternFormat::DelimiterUnderscore:
         result = "_";
         break;
+    case PatternFormat::DelimiterTilde:
+        result = "~";
+        break;
+    case PatternFormat::DelimiterWhiteSpace:
+        result = " ";
+        break;
+
     default:
         qWarning() << "default not implemented";
         break;

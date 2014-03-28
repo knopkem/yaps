@@ -42,7 +42,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 set(VERSION_MAJOR 1 CACHE STRING "${PROJECT_NAME} major version number.")
-set(VERSION_MINOR 0 CACHE STRING "${PROJECT_NAME} minor version number.")
+set(VERSION_MINOR 1 CACHE STRING "${PROJECT_NAME} minor version number.")
 set(VERSION_BUILD 0 CACHE STRING "${PROJECT_NAME} build version number.")
 
 configure_file( cmake/version_config.h.in ${CMAKE_BINARY_DIR}/generated/version_config.h )

@@ -11,7 +11,7 @@ class ComposerDlg : public QDialog
 {
     Q_OBJECT
 public:
-    ComposerDlg( QList<PatternFormat::eTag> items, QList<PatternFormat::eTag> selectedItems, QWidget* parent = NULL);
+    ComposerDlg( QList<PatternFormat::eTag> items, QList<PatternFormat::eTag> selectedItems, const QString& labelText, QWidget* parent = NULL);
     ~ComposerDlg();
 
     QList<PatternFormat::eTag> selectedItems() const;

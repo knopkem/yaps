@@ -30,6 +30,8 @@ protected slots:
     void doMove();
     void doCopy();
 
+    void onDetermineState();
+
 protected:
     QGroupBox* createIntroGroup();
     QGroupBox* createSourceGroup();

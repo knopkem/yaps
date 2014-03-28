@@ -89,6 +89,7 @@ ExifData ExifWrapper::doParse( eLookup type, const QString& path )
     data.FilePath = path;
     data.Extention = info.completeSuffix();
     data.FileName = info.completeBaseName();
+    data.AbsolutePath = info.absolutePath();
 
     BaseLookup* lookup = NULL;
     if (type == EXIFTOOL) {

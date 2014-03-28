@@ -71,6 +71,12 @@ QString PatternFormat::tagToString( eTag tag )
     case PatternFormat::DelimiterUnderscore:
         result = "[_]";
         break;
+    case PatternFormat::DelimiterTilde:
+        result = "[~]";
+        break;
+    case PatternFormat::DelimiterWhiteSpace:
+        result = "[ ]";
+        break;
     default:
         qWarning() << "default not implemented";
         break;
@@ -141,6 +147,13 @@ QString PatternFormat::tagToDescription( eTag tag )
     case PatternFormat::DelimiterUnderscore:
         result = "insert delimiter _";
         break;
+    case PatternFormat::DelimiterTilde:
+        result = "insert delimiter ~";
+        break;
+    case PatternFormat::DelimiterWhiteSpace:
+        result = "insert delimiter [whitespace]";
+        break;
+
     default:
         qWarning() << "default not implemented";
         break;
@@ -211,6 +224,13 @@ QString PatternFormat::tagToExample( eTag tag )
     case PatternFormat::DelimiterUnderscore:
         result = "_";
         break;
+    case PatternFormat::DelimiterTilde:
+        result = "~";
+        break;
+    case PatternFormat::DelimiterWhiteSpace:
+        result = " ";
+        break;
+
     default:
         qWarning() << "default not implemented";
         break;
