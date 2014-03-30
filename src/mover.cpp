@@ -46,6 +46,9 @@ public:
 Mover::Mover( QObject* parent/*= NULL*/ ) : QObject(parent), d(new MoverPrivate)
 {
     d->appPath = QApplication::applicationDirPath();
+#ifdef Q_WS_MAC
+    d->appPath = QCoreApplication::applicationDirPath() + "/../../..";
+#endif
     d->wrapper = new ExifWrapper(d->appPath, this);
     d->wrap = new AddWrapper(d->wrapper);
 }

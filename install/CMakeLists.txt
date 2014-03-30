@@ -16,7 +16,7 @@ endif()
 
 if(WIN32 OR APPLE)
     include(DeployQt4)
-    install_qt4_executable("${EXECUTABLE}" "qico")  
+    #install_qt4_executable("${EXECUTABLE}" "qico")  
 endif(WIN32 OR APPLE)
 
 if(WIN32 OR APPLE)

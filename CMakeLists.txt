@@ -124,9 +124,14 @@ ENDIF (DOXYGEN)
 ## #################################################################
 
 if(WIN32)
-FILE(GLOB files "${CMAKE_CURRENT_SOURCE_DIR}/deploy/*.*")
-install (FILES ${files} DESTINATION ${BIN_INSTALL_DIR} )
+   FILE(GLOB files "${CMAKE_CURRENT_SOURCE_DIR}/deploy/*.*")
+   install (FILES ${files} DESTINATION ${BIN_INSTALL_DIR} )
 endif(WIN32)
+
+if(APPLE)
+   install (DIRECTORY deploy/lib DESTINATION ${BIN_INSTALL_DIR} )
+   install (PROGRAMS deploy/exiftool deploy/exiv2 DESTINATION ${BIN_INSTALL_DIR} )
+endif(APPLE)
 
 ## #################################################################
 ## PACKAGING
@@ -179,7 +184,7 @@ if(WIN32)
 
 elseif(APPLE)
      set(PROJECT_VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_BUILD})
-     set(CMAKE_INSTALL_PREFIX "/Applications")
+     set(CMAKE_INSTALL_PREFIX "/Applications/yaps")
      set(CPACK_GENERATOR "DragNDrop")
      set(CPACK_DMG_FORMAT "UDBZ")
      set(CPACK_DMG_VOLUME_NAME "${PROJECT_NAME} ")

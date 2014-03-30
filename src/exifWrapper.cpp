@@ -99,7 +99,7 @@ ExifData ExifWrapper::doParse( eLookup type, const QString& path )
     }
     QString processPath = this->osSpecificPath() + lookup->processName() + this->osSpecificExtension();
 
-#ifdef OS_WIN
+#if defined (Q_WS_WIN) || defined( Q_WS_MAC)
     if (!QFile::exists(processPath) ) {
         qCritical() << "process not found" << processPath;
     }
@@ -139,7 +139,7 @@ ExifData ExifWrapper::doParse( eLookup type, const QString& path )
 
 QString ExifWrapper::osSpecificPath()
 {
-#ifdef OS_WIN
+#if defined (Q_WS_WIN) || defined( Q_WS_MAC)
     return d->appPath + "/";
 #endif
     return QString();
