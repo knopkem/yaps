@@ -41,6 +41,7 @@ struct ExifData
 {
     QString FilePath;
     QString FileName;
+    QString AbsolutePath;
     QString Extention;
     ExifDate CreateDate;
     QString CameraModel;

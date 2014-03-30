@@ -25,7 +25,9 @@ public:
         DelimiterDash,
         DelimiterDot,
         DelimiterHash,
-        DelimiterUnderscore
+        DelimiterUnderscore,
+        DelimiterTilde,
+        DelimiterWhiteSpace
     };
 
     QList<PatternFormat::eTag> FolderStructureContainer;
