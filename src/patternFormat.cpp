@@ -97,7 +97,7 @@ QString PatternFormat::tagToDescription( eTag tag )
         result = "Camera model name";
         break;
     case PatternFormat::MediaType:
-        result = "One of the following: photos or videos";
+        result = "One of the following: image, video, other";
         break;
     case PatternFormat::Year:
         result = "creation date - year";
@@ -174,7 +174,7 @@ QString PatternFormat::tagToExample( eTag tag )
         result = "D50";
         break;
     case PatternFormat::MediaType:
-        result = "photos";
+        result = "image";
         break;
     case PatternFormat::Year:
         result = QDate::currentDate().toString("yyyy");

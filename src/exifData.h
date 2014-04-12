@@ -46,7 +46,7 @@ struct ExifData
     ExifDate CreateDate;
     QString CameraModel;
     QString CameraMake;
-    QString MediaType;
+    QString MimeType;
 };
 #endif // exifData_h__
 

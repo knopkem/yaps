@@ -36,15 +36,21 @@ ExifWrapper::~ExifWrapper()
 QString ExifWrapper::findValue( const QStringList input, const QString& key )
 {
     QString result;
+	bool found = false;
     for(int i=0; i < input.count(); ++i) {
         QString current = input.at(i);
         if (current.contains(key)) {
-            int index = current.indexOf(":");
+			int index = current.indexOf(":");
             if (index > 0) {
                 result = current.right(current.length() - (index+1)).trimmed();
+				found = true;
             }
+			break;
         }
     }
+	if (!found) {
+		qWarning() << "could not find" << key << " in meta data" << input;
+	}
     return result;
 }
 
@@ -57,15 +63,15 @@ void ExifWrapper::parseFile( ExifData& data )
     QFileInfo info (data.FilePath);
 
     // skip known extensions
-    if (isUnsupportedFileType(info.completeSuffix())) {
+    if (isUnsupportedFileType(info.suffix())) {
         data.Extention = info.suffix();
         data.FileName = info.completeBaseName();
         return;
     }
 
     // decide what tool to use, we want exiv2 only for jpg
-    if ( isEqual(info.completeSuffix(), "jpg") ) {
-        data = doParse(EXIV2, data.FilePath);
+    if (isEqual(info.suffix(), "jpg") ) {
+		data = doParse(EXIV2, data.FilePath);
         if (data.CreateDate.isInvalid()) {
             qWarning() << "Parsing failed once, retrying.";
             data = doParse(EXIFTOOL, data.FilePath);
@@ -127,7 +133,7 @@ ExifData ExifWrapper::doParse( eLookup type, const QString& path )
     data.CreateDate = ExifDate(findValue(result, lookup->createDate()));
     data.CameraModel = findValue(result, lookup->cameraModel());
     data.CameraMake = findValue(result, lookup->cameraMake());
-    data.MediaType = findValue(result, lookup->mimeType());
+    data.MimeType = findValue(result, lookup->mimeType());
     
     delete process;
     delete lookup;
@@ -150,7 +156,7 @@ QString ExifWrapper::osSpecificPath()
 
 QString ExifWrapper::osSpecificExtension()
 {
-#ifdef OS_WIN
+#ifdef Q_WS_WIN
     return ".exe";
 #endif
     return QString();

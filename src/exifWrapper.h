@@ -27,19 +27,19 @@ public:
     inline QString createDate() {return "Image timestamp";}
     inline QString cameraModel() {return "Camera model";}
     inline QString cameraMake() {return "Camera make";}
-    inline QString mimeType() {return "Thumbnail";}
+    inline QString mimeType() {return "MIME type";}
 };
 
 class ExifToolLookup : public BaseLookup
 {
 public:
     inline QString processName() {return "exifTool";}
-    inline QStringList processParams() {return QStringList() << "-CreateDate" << "-Model" << "-Make";}
+    inline QStringList processParams() {return QStringList() << "-CreateDate" << "-Model" << "-Make" << "-MIMEType";}
     inline QString fileName() {return "File Name";}
     inline QString createDate() {return "Create Date";}
-    inline QString cameraModel() {return "Camera Model Name";}
+    inline QString cameraModel() {return "Model";}
     inline QString cameraMake() {return "Make";}
-    inline QString mimeType() {return "MIME type";}
+    inline QString mimeType() {return "MIME Type";}
 
 };
 

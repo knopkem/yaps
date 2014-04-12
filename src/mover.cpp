@@ -335,7 +335,7 @@ QString Mover::proposeNewFilename(const QString &path)
     int i = 1;
     do {
         QFileInfo info(result);
-        QString suffix =  info.completeSuffix();
+        QString suffix =  info.suffix();
         if (!suffix.isEmpty()) {
             suffix.prepend(".");
         }
@@ -393,12 +393,12 @@ QString Mover::tagToValue(PatternFormat::eTag tag, const ExifData& data)
         result = data.CameraModel;
         break;
     case PatternFormat::MediaType:
-        if (data.MediaType.isEmpty())
-            result = "";
-        else if (data.MediaType.contains("image"))
-            result = "photos";
+        if (data.MimeType.contains("image"))
+            result = "image";
+		else if (data.MimeType.contains("video"))
+			result = "video";
         else
-            result = "videos";
+            result = "other";
         break;
     case PatternFormat::Year:
         result = data.CreateDate.year();
