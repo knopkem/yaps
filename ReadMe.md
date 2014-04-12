@@ -7,7 +7,7 @@ Download installer:  http://sourceforge.net/projects/yapsyetanotherphotosorter
 
 If you are like me and have a heap of photos and videos in randomly named folders laying on your hard disk this tool might be something for you  (provided you don't like it that way). It takes your photos and nicely sorts them into a new folder structure auto generated on the criteria you chose. For example like this:
 
-**[year]/[month]/[timestamp].jpg**
+**[year]/[month]/[day]_[timestamp].jpg**
 
 Of course the structure can be customized to your needs. Optionally duplicate files can be removed.
 
