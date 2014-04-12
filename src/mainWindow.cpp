@@ -84,16 +84,16 @@ MainWindow::MainWindow() : d(new MainWindowPrivate)
     d->folderPatternList << PatternFormat::Year;
     d->folderPatternList << PatternFormat::NewSubDir;
     d->folderPatternList << PatternFormat::Month;
-    d->folderPatternList << PatternFormat::DelimiterDot;
+    d->folderPatternList << PatternFormat::DelimiterDash;
     d->folderPatternList << PatternFormat::MonthL;
 
-    d->filePatternList << PatternFormat::Hour;
-    d->filePatternList << PatternFormat::DelimiterDot;
-    d->filePatternList << PatternFormat::Minute;
-    d->filePatternList << PatternFormat::DelimiterDot;
-    d->filePatternList << PatternFormat::Second;
+    d->filePatternList << PatternFormat::Day;
     d->filePatternList << PatternFormat::DelimiterDash;
-    d->filePatternList << PatternFormat::MonthL;
+	d->filePatternList << PatternFormat::MonthS;
+	d->filePatternList << PatternFormat::DelimiterDash;
+	d->filePatternList << PatternFormat::Hour;
+	d->filePatternList << PatternFormat::Minute;
+    d->filePatternList << PatternFormat::Second;
 
     readSettings();
 

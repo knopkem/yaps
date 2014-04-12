@@ -58,7 +58,7 @@ void ExifWrapper::parseFile( ExifData& data )
 
     // skip known extensions
     if (isUnsupportedFileType(info.completeSuffix())) {
-        data.Extention = info.completeSuffix();
+        data.Extention = info.suffix();
         data.FileName = info.completeBaseName();
         return;
     }
@@ -87,7 +87,7 @@ ExifData ExifWrapper::doParse( eLookup type, const QString& path )
     QFileInfo info (path);
     ExifData data;
     data.FilePath = path;
-    data.Extention = info.completeSuffix();
+    data.Extention = info.suffix();
     data.FileName = info.completeBaseName();
     data.AbsolutePath = info.absolutePath();
 
