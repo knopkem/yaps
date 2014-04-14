@@ -40,7 +40,7 @@ Of course the structure can be customized to your needs. Optionally duplicate fi
 
 # Notes
 
-The tool uses the following projects behind: exiv2 (http://www.exiv2.org) and exiftool (http://www.sno.phy.queensu.ca/~phil/exiftool). 
+The tool uses the following projects behind: [exiv2] (http://www.exiv2.org) and [exiftool] (http://www.sno.phy.queensu.ca/~phil/exiftool). 
 Credits go there.
 
 # Usage
