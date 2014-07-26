@@ -31,7 +31,7 @@ Of course the structure can be customized to your needs. Optionally duplicate fi
 ## Requirements
 * CMAKE
 * Essential build tools
-* Qt4
+* Qt5
 
 ## Steps
 * compile or install Qt library + add bin directory to path
@@ -48,9 +48,9 @@ Credits go there.
 * you need exiv2 AND exiftool available (either from path or copied into the bin folder)
 * on debian linux, just install both packages
 * on windows, build or download prebuild executables and put them into the same folder as the application
+* alternatively just build the INSTALL target project or the PACKAGING target (needs NSIS on windows)
 
 # Roadmap
 
 * *watch folder* to easily drop photos from anywhere and auto import them into an existing archive
 * deamon/service to run in background at system start (watching the watch folder)
-* an additional Qt5 ported branch
