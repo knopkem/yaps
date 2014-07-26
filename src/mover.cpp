@@ -7,10 +7,11 @@
 #include "mover.h"
 #include "exifWrapper.h"
 #include "simpleLog.h"
-
 #include "reportDlg.h"
 
 #include <QtGui>
+#include <QtWidgets>
+#include <QtconcurrentMap>
 
 struct AddWrapper {
     ExifWrapper *instance;
@@ -75,7 +76,7 @@ bool Mover::performOperations(const QString &source, const QString &target, cons
     }
 
     d->currentTarget = target;
-    QString logs = QDesktopServices::storageLocation(QDesktopServices::TempLocation) + "/yaps_logs";
+	QString logs = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/yaps_logs";
     makedir(logs);
     QString logFilepath = logs + "/" + QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss") + ".txt";
     SimpleLog::startFileLogging(logFilepath);

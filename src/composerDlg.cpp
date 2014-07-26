@@ -7,6 +7,7 @@
 #include "composerDlg.h"
 
 #include <QtGui>
+#include <QtWidgets>
 
 class ComposerDlgPrivate
 {

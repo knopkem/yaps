@@ -9,6 +9,7 @@
 #include "composerDlg.h"
 
 #include <QtGui>
+#include <QtWidgets>
 
 
 //--------------------------------------------------------------------------------------
@@ -48,7 +49,7 @@ public:
 
 MainWindow::MainWindow() : d(new MainWindowPrivate)
 {
-    setWindowFlags( Qt::Dialog | Qt::WindowTitleHint );
+    setWindowFlags( Qt::Dialog );
     this->setWindowTitle( tr("YAPS - ") + VERSION_STRING );
     this->setMinimumWidth(800);
 
@@ -471,8 +472,8 @@ bool MainWindow::validateSelection()
 
 void MainWindow::readSettings()
 {
-    QString inputPath = QDesktopServices::storageLocation(QDesktopServices::PicturesLocation);
-    QString outputPath = QDesktopServices::storageLocation(QDesktopServices::DesktopLocation)+ "/yaps_output";
+	QString inputPath = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
+	QString outputPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation) + "/yaps_output";
 
     d->sourceLineEdit->setText(d->settings->value("SourceFolder", inputPath).toString());
     d->targetLineEdit->setText(d->settings->value("TargetFolder", outputPath).toString());

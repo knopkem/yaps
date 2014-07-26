@@ -22,6 +22,7 @@ set(project_policies
   CMP0013 # NEW: Duplicate binary directories are not allowed.
   CMP0014 # NEW: Input directories must have CMakeLists.txt
   CMP0020 # NEW: disable autolinking to qtmain as we have our own main() functions (new in Qt 5.1)
+  CMP0043 # NEW: Ignore COMPILE_DEFINITIONS_<Config> properties
   )
   
 foreach(policy ${project_policies})
@@ -43,7 +44,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 set(VERSION_MAJOR 1 CACHE STRING "${PROJECT_NAME} major version number.")
 set(VERSION_MINOR 1 CACHE STRING "${PROJECT_NAME} minor version number.")
-set(VERSION_BUILD 1 CACHE STRING "${PROJECT_NAME} build version number.")
+set(VERSION_BUILD 2 CACHE STRING "${PROJECT_NAME} build version number.")
 
 configure_file( cmake/version_config.h.in ${CMAKE_BINARY_DIR}/generated/version_config.h )
 include_directories( ${CMAKE_BINARY_DIR}/generated/ ) # Make sure it can be included
@@ -94,8 +95,10 @@ endif()
 ## #################################################################
 
 # Qt
-FIND_PACKAGE(Qt4 REQUIRED)
-    INCLUDE(${QT_USE_FILE})
+FIND_PACKAGE(Qt5Core REQUIRED)
+FIND_PACKAGE(Qt5Gui REQUIRED)
+FIND_PACKAGE(Qt5Widgets REQUIRED)
+FIND_PACKAGE(Qt5Concurrent REQUIRED)
     
 #add_subdirectory
 add_subdirectory(src)

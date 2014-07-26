@@ -4,15 +4,14 @@
  * See the COPYRIGHT file for terms of use.
  */
 
-#include <QtGui>
-
 #include "mainWindow.h"
 #include "simpleLog.h"
-
 #include <version_config.h>
 
+#include <QtGui>
+#include <QtWidgets>
 
-void redirectMessageOutput(QtMsgType type, const char *msg)
+void redirectMessageOutput(QtMsgType type, const QMessageLogContext& ctx, const QString &msg)
 {
     switch (type) {
     case QtDebugMsg:
@@ -39,11 +38,11 @@ int main(int argc, char *argv[])
 {
     QCoreApplication::setOrganizationName("nonprofit");
     QCoreApplication::setOrganizationDomain("nonprofit");
-    QCoreApplication::setApplicationName("PhotoMover");
+    QCoreApplication::setApplicationName("yaps");
     QCoreApplication::setApplicationVersion(VERSION_STRING);
     Q_INIT_RESOURCE(app);
 
-    qInstallMsgHandler(redirectMessageOutput);
+    qInstallMessageHandler(redirectMessageOutput);
 
     QApplication app(argc, argv);
     MainWindow window;

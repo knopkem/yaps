@@ -8,6 +8,7 @@
 #include "exifData.h"
 
 #include <QtGui>
+#include <QtWidgets>
 #include <QApplication>
 
 class ExifWrapperPrivate

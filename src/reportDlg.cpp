@@ -7,6 +7,7 @@
 #include "reportDlg.h"
 
 #include <QtGui>
+#include <QtWidgets>
 
 class ReportDlgPrivate
 {
