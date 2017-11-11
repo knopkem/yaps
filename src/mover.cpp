@@ -11,7 +11,7 @@
 
 #include <QtGui>
 #include <QtWidgets>
-#include <QtconcurrentMap>
+#include <QtConcurrentMap>
 
 struct AddWrapper {
     ExifWrapper *instance;
