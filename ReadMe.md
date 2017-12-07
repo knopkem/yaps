@@ -35,8 +35,9 @@ Of course the structure can be customized to your needs. Optionally duplicate fi
 
 ## Steps
 * compile or install Qt library + add bin directory to path
-* run cmake on the project, this should detect Qt
+* run cmake on the project, set QT_ROOT_PREFIX to install directory of QT
 * build
+* optional (windows/mac): build package project (requires NSIS on windows)
 
 # Notes
 

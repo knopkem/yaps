@@ -95,6 +95,7 @@ endif()
 ## #################################################################
 
 # Qt
+INCLUDE(FindQt5)
 FIND_PACKAGE(Qt5Core REQUIRED)
 FIND_PACKAGE(Qt5Gui REQUIRED)
 FIND_PACKAGE(Qt5Widgets REQUIRED)
