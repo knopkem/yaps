@@ -2,6 +2,8 @@
 #define patternFormat_h__
 
 #include <QList>
+#include <QMetaType>
+#include <QObject>
 
 class PatternFormat
 {
@@ -41,4 +43,8 @@ public:
     static QString tagToExample(PatternFormat::eTag tag);
 
 };
+
+Q_DECLARE_METATYPE(PatternFormat)
+Q_DECLARE_METATYPE(PatternFormat::eTag)
+
 #endif //patternFormat_h__

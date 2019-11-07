@@ -80,24 +80,7 @@ MainWindow::MainWindow() : d(new MainWindowPrivate)
 
     d->mover = new Mover(this);
 
-    // init defaults
-
-    d->folderPatternList << PatternFormat::Year;
-    d->folderPatternList << PatternFormat::NewSubDir;
-    d->folderPatternList << PatternFormat::Month;
-    d->folderPatternList << PatternFormat::DelimiterDash;
-    d->folderPatternList << PatternFormat::MonthL;
-
-    d->filePatternList << PatternFormat::Day;
-    d->filePatternList << PatternFormat::DelimiterDash;
-	d->filePatternList << PatternFormat::MonthS;
-	d->filePatternList << PatternFormat::DelimiterDash;
-	d->filePatternList << PatternFormat::Hour;
-	d->filePatternList << PatternFormat::Minute;
-    d->filePatternList << PatternFormat::Second;
-
     readSettings();
-
     evaluateFolderStructure();
     evaluateFilenameStructure();
     onDetermineState();
@@ -475,6 +458,36 @@ void MainWindow::readSettings()
 	QString inputPath = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
 	QString outputPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation) + "/yaps_output";
 
+    QVariantList defaultFolderPattern;
+    defaultFolderPattern << PatternFormat::Year;
+    defaultFolderPattern << PatternFormat::NewSubDir;
+    defaultFolderPattern << PatternFormat::Month;
+    defaultFolderPattern << PatternFormat::DelimiterDash;
+    defaultFolderPattern << PatternFormat::MonthL;
+
+    QVariantList varList = d->settings->value("FolderPattern", defaultFolderPattern).toList();
+    foreach(const QVariant & var, varList) {
+        if (var.canConvert<PatternFormat::eTag>()) {
+            d->folderPatternList << var.value<PatternFormat::eTag>();
+        }
+    }
+
+    QVariantList defaultFilePattern;
+    defaultFilePattern << PatternFormat::Day;
+    defaultFilePattern << PatternFormat::DelimiterDash;
+    defaultFilePattern << PatternFormat::MonthS;
+    defaultFilePattern << PatternFormat::DelimiterDash;
+    defaultFilePattern << PatternFormat::Hour;
+    defaultFilePattern << PatternFormat::Minute;
+    defaultFilePattern << PatternFormat::Second;
+
+    QVariantList varList2 = d->settings->value("FilePattern", defaultFilePattern).toList();
+    foreach(const QVariant& var, varList2) {
+        if (var.canConvert<PatternFormat::eTag>()) {
+            d->filePatternList << var.value<PatternFormat::eTag>();
+        }
+    }
+
     d->sourceLineEdit->setText(d->settings->value("SourceFolder", inputPath).toString());
     d->targetLineEdit->setText(d->settings->value("TargetFolder", outputPath).toString());
 }
@@ -483,6 +496,18 @@ void MainWindow::readSettings()
 
 void MainWindow::writeSettings()
 {
+    QVariantList currentFolderPattern;
+    foreach(PatternFormat::eTag tag, d->folderPatternList) {
+        currentFolderPattern << tag;
+    }
+    d->settings->setValue("FolderPattern", currentFolderPattern);
+
+    QVariantList currentFilePattern;
+    foreach(PatternFormat::eTag tag, d->filePatternList) {
+        currentFilePattern << tag;
+    }
+    d->settings->setValue("FilePattern", currentFilePattern);
+
     d->settings->setValue("SourceFolder", d->sourceLineEdit->text());
     d->settings->setValue("TargetFolder", d->targetLineEdit->text());
     d->settings->sync();
