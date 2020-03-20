@@ -1,4 +1,6 @@
 # YAPS - Yet Another Photo Sorter
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fknopkem%2Fyaps.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fknopkem%2Fyaps?ref=badge_shield)
+
 
 A flexible photo sorting tool that uses the EXIF information of your photos and videos to copy or move them into a structured folder hierarchy.
 
@@ -55,3 +57,7 @@ Credits go there.
 
 * *watch folder* to easily drop photos from anywhere and auto import them into an existing archive
 * deamon/service to run in background at system start (watching the watch folder)
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fknopkem%2Fyaps.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fknopkem%2Fyaps?ref=badge_large)
