@@ -413,6 +413,9 @@ QString Mover::tagToValue(PatternFormat::eTag tag, const ExifData& data)
     case PatternFormat::MonthL:
         result = data.CreateDate.monthL();
         break;
+    case PatternFormat::WeekNumber:
+        result = data.CreateDate.weekNumber();
+        break;
     case PatternFormat::Day:
         result = data.CreateDate.day();
         break;

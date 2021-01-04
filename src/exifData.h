@@ -14,6 +14,7 @@ public:
     QString month() const;
     QString monthS() const;
     QString monthL() const;
+    QString weekNumber() const;
 
     QString day() const;
     QString dayS() const;

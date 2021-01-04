@@ -29,7 +29,8 @@ public:
         DelimiterHash,
         DelimiterUnderscore,
         DelimiterTilde,
-        DelimiterWhiteSpace
+        DelimiterWhiteSpace,
+        WeekNumber
     };
 
     QList<PatternFormat::eTag> FolderStructureContainer;

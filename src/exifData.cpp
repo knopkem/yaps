@@ -53,6 +53,13 @@ QString ExifDate::monthL() const
 
 //--------------------------------------------------------------------------------------
 
+QString ExifDate::weekNumber() const
+{
+    return QString::number(m_date.date().weekNumber());
+}
+
+//--------------------------------------------------------------------------------------
+
 QString ExifDate::day() const
 {
     return m_date.date().toString("dd");

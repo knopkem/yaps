@@ -363,6 +363,7 @@ void MainWindow::editFolderPattern()
     items << PatternFormat::Day;
     items << PatternFormat::DayS;
     items << PatternFormat::DayL;
+    items << PatternFormat::WeekNumber;
 
     QString description = tr("Usage: Compose your desired folder structure by clicking on the items in the selection list.\n"
         "Inserting a subdirectory element will mark the beginning of a new sub folder.");

@@ -34,7 +34,7 @@ void SimpleLog::log( eLogLevel level, const QString& msg )
 #ifdef Q_OS_WIN
         << '\r'  // Use standard windows line endings
 #endif
-        << endl;  // This is '\n' << flush;
+        << Qt::endl;  // This is '\n' << flush;
 
     m_OutputStream->flush();
 }

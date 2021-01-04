@@ -35,6 +35,9 @@ QString PatternFormat::tagToString( eTag tag )
     case PatternFormat::MonthL:
         result = "[month: long]";
         break;
+    case PatternFormat::WeekNumber:
+        result = "[WeekNumber]";
+        break;
     case PatternFormat::Day:
         result = "[day: dd]";
         break;
@@ -110,6 +113,9 @@ QString PatternFormat::tagToDescription( eTag tag )
         break;
     case PatternFormat::MonthL:
         result = "creation date - month long name";
+        break;
+    case PatternFormat::WeekNumber:
+        result = "creation date - week number";
         break;
     case PatternFormat::Day:
         result = "creation date - day";
@@ -187,6 +193,9 @@ QString PatternFormat::tagToExample( eTag tag )
         break;
     case PatternFormat::MonthL:
         result = QDate::currentDate().toString("MMMM");
+        break;
+    case PatternFormat::WeekNumber:
+        result = QString::number(QDate::currentDate().weekNumber());
         break;
     case PatternFormat::Day:
         result = QDate::currentDate().toString("dd");
