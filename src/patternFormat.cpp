@@ -195,7 +195,7 @@ QString PatternFormat::tagToExample( eTag tag )
         result = QDate::currentDate().toString("MMMM");
         break;
     case PatternFormat::WeekNumber:
-        result = QString::number(QDate::currentDate().weekNumber());
+        result = QString::number(QDate::currentDate().weekNumber()).rightJustified(2, '0');
         break;
     case PatternFormat::Day:
         result = QDate::currentDate().toString("dd");

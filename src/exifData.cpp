@@ -55,7 +55,7 @@ QString ExifDate::monthL() const
 
 QString ExifDate::weekNumber() const
 {
-    return QString::number(m_date.date().weekNumber());
+    return QString::number(m_date.date().weekNumber()).rightJustified(2, '0');
 }
 
 //--------------------------------------------------------------------------------------
