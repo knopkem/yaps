@@ -43,8 +43,8 @@ SET(SOURCES
     patternFormat.cpp
 )
  
-QT5_WRAP_CPP(HEADERS_MOC ${HEADERS_WRAP})
-QT5_ADD_RESOURCES(RESOURCES_QRC ${RESOURCES})
+QT6_WRAP_CPP(HEADERS_MOC ${HEADERS_WRAP})
+QT6_ADD_RESOURCES(RESOURCES_QRC ${RESOURCES})
 
 if(WIN32)
   SET(SOURCES ${SOURCES} ${PROJECT_NAME}.rc)
@@ -63,7 +63,7 @@ ADD_EXECUTABLE(${PROJECT_NAME}
     ${RESOURCES_QRC}
 )
 
-target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Concurrent)
+target_link_libraries(${PROJECT_NAME} Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Concurrent)
 
 # Group common files together in Visual Studio.
 SOURCE_GROUP("Header Files" FILES ${HEADERS})

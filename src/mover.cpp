@@ -101,7 +101,7 @@ bool Mover::performOperations(const QString &source, const QString &target, cons
 
     ReportDetail detail;
     detail = d->report;
-    detail.ElapsedTime = QDateTime::fromTime_t(elapsed.elapsed()/1000).toUTC().toString("hh:mm:ss");
+    detail.ElapsedTime = QDateTime::fromSecsSinceEpoch(elapsed.elapsed()/1000).toUTC().toString("hh:mm:ss");
     detail.LogfilePath = logFilepath;
 
     myDialog.setReportDetail(detail);

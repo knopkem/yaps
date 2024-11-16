@@ -95,11 +95,17 @@ endif()
 ## #################################################################
 
 # Qt
-INCLUDE(FindQt5)
-FIND_PACKAGE(Qt5Core REQUIRED)
-FIND_PACKAGE(Qt5Gui REQUIRED)
-FIND_PACKAGE(Qt5Widgets REQUIRED)
-FIND_PACKAGE(Qt5Concurrent REQUIRED)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_PREFIX_PATH C:/Qt6/6.8.0/msvc2022_64)
+
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Concurrent)
+qt_standard_project_setup()
+#INCLUDE(FindQt5)
+#FIND_PACKAGE(Qt5Core REQUIRED)
+#FIND_PACKAGE(Qt5Gui REQUIRED)
+#FIND_PACKAGE(Qt5Widgets REQUIRED)
+#FIND_PACKAGE(Qt5Concurrent REQUIRED)
     
 #add_subdirectory
 add_subdirectory(src)

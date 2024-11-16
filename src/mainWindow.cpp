@@ -255,7 +255,7 @@ QString MainWindow::openFileDialog()
 {
     QDir selDir;
     QFileDialog dialog(this);
-    dialog.setFileMode(QFileDialog::DirectoryOnly);
+    dialog.setFileMode(QFileDialog::Directory);
     if (dialog.exec()) {
         QStringList selected = dialog.selectedFiles();
         if (!selected.empty())
