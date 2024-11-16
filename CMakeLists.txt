@@ -1,6 +1,7 @@
+cmake_minimum_required(VERSION 3.10)
+
 PROJECT(yaps)
 
-cmake_minimum_required(VERSION 2.8)
 
 #-----------------------------------------------------------------------------
 # See http://cmake.org/cmake/help/cmake-2-8-docs.html#section_Policies for details
@@ -97,7 +98,9 @@ endif()
 # Qt
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_PREFIX_PATH C:/Qt6/6.8.0/msvc2022_64)
+#set(CMAKE_PREFIX_PATH "" CACHE PATH "C:/Qt/6.8.0/msvc2022_64")
+list(APPEND CMAKE_PREFIX_PATH "C:/Qt/6.8.0/msvc2022_64")
+#set(CMAKE_PREFIX_PATH C:/Qt/6.8.0/msvc2022_64)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Concurrent)
 qt_standard_project_setup()

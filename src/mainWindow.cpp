@@ -49,6 +49,7 @@ public:
 
 MainWindow::MainWindow() : d(new MainWindowPrivate)
 {
+    qDebug() << "init";
     setWindowFlags( Qt::Dialog );
     this->setWindowTitle( tr("YAPS - ") + VERSION_STRING );
     this->setMinimumWidth(800);
@@ -84,6 +85,7 @@ MainWindow::MainWindow() : d(new MainWindowPrivate)
     evaluateFolderStructure();
     evaluateFilenameStructure();
     onDetermineState();
+    qDebug() << "init done";
 }
 
 //--------------------------------------------------------------------------------------

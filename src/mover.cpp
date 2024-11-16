@@ -76,7 +76,7 @@ bool Mover::performOperations(const QString &source, const QString &target, cons
     }
 
     d->currentTarget = target;
-	QString logs = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/yaps_logs";
+    QString logs = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/yaps_logs";
     makedir(logs);
     QString logFilepath = logs + "/" + QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss") + ".txt";
     SimpleLog::startFileLogging(logFilepath);
@@ -253,7 +253,7 @@ bool Mover::fileOperation(const ExifData &data, const QString &target, const Fil
                 QString relativePath = data.AbsolutePath;
                 relativePath.remove(d->sourcePath);
                 QString folder = target + "/" + DUPLICATES_FOLDER + "/" + relativePath;
-                qWarning() << "copy " << folder;
+                qDebug() << "copy " << folder;
                 makedir(folder);
                 return copyOrMoveFile(data.FilePath, folder + "/" + data.FileName + "." + data.Extention, options);
             }
@@ -264,7 +264,7 @@ bool Mover::fileOperation(const ExifData &data, const QString &target, const Fil
     // create filename from pattern
     finalTarget += "/"+ createFilename(data, format);
 
-    bool result =  copyOrMoveFile(data.FilePath, finalTarget, options);
+    bool result = copyOrMoveFile(data.FilePath, finalTarget, options);
     if (result) {
         d->report.FilesCopied++;
     }
@@ -275,16 +275,21 @@ bool Mover::fileOperation(const ExifData &data, const QString &target, const Fil
 
 bool Mover::copyOrMoveFile( const QString& source, const QString& target, const FileOptions& options )
 {
+    QFile original(source);
     QString finalTarget = target;
     // now check for name clashes and create a new filename
     if (QFile::exists(target)) {
-        finalTarget = proposeNewFilename(finalTarget);
-        qWarning() << "file already exists (" << finalTarget << " )  creating new name:" << finalTarget;
+        d->report.Duplicates++;
+        if (options.fileOp != FileOptions::COPY) {
+            original.remove(source);
+        }
+        return true;
+        // finalTarget = proposeNewFilename(finalTarget);
+        // qWarning() << "file already exists (" << finalTarget << " )  creating new name:" << finalTarget;
     }
 
 
     // depending on the input either copy or move the file
-    QFile original(source);
 
     bool ok = false;
     if (options.fileOp == FileOptions::COPY) {
@@ -318,6 +323,7 @@ bool Mover::makedir( const QString& path )
     if (dir.exists(path)){
         return true;
     }
+    qDebug() << "creating directory" << path;
 
     if (!dir.mkpath(path)) {
         qWarning() << "Could not create directory: " << path;
@@ -362,7 +368,6 @@ QString Mover::createFolderStructure( const QString& root, const ExifData& data,
     for(int i=0; i < subdirs.count(); ++i) {
         QString next = subdirs.at(i);
         part += "/"+ next;
-        qDebug() << "creating directory" << part;
         makedir(part);
     }
     result.prepend(root + "/");
@@ -510,8 +515,57 @@ bool Mover::hasDuplicateHash( const QString& folder, const QString& filepath )
 
 void Mover::initializeFolder( const QString& folder )
 {
+    qDebug() << "initializing folder " << folder;
+
     if (d->md5HashSet.contains(folder)) {
+        qDebug() << "already initialized";
         return;
+    }
+
+    bool hashIntegrity = true;
+    QFile hashFile(folder + "/hash.txt");
+
+    {
+        QDir dir(folder);
+        QStringList files = dir.entryList(QDir::Files | QDir::NoDotAndDotDot);
+
+        if (files.count() > 0) {
+
+            QSet<QString> set;
+            if (hashFile.open(QIODevice::ReadOnly)) {
+                QTextStream in(&hashFile);
+
+                while (!in.atEnd()) {
+                    QString line = in.readLine();
+                    QStringList fields = line.split(",");
+                    if (fields.count() == 2) {
+                        QString filename = fields.at(0);
+                        QString md5 = fields.at(1);
+                        set.insert(md5);
+                        d->md5HashSet[folder] = set;
+                        // check that each file exists in the hashfile
+                        if (!files.contains(filename)) {
+                            hashIntegrity = false;
+                            qWarning() << filename << " not found in hashfile";
+                        }
+                    }
+                }
+
+                hashFile.close();
+            }
+            else {
+                qWarning() << "no hash file found " << hashFile.fileName();
+                hashIntegrity = false;
+            }
+        }
+        else {
+            hashIntegrity = false;
+        }
+
+        if (d->md5HashSet.contains(folder) && hashIntegrity) {
+            qDebug() << "initialized successfully from hash";
+            return;
+        }
     }
 
     // find all files
@@ -524,11 +578,31 @@ void Mover::initializeFolder( const QString& folder )
 
     // hash them
     QSet<QString> set;
+    QMap<QString, QString> fileToMd5Map;
     foreach(const QString& file, files) {
-        set.insert(md5sum(folder + "/" + file));
+        QString filepath = folder + "/" + file;
+        QString md5 = md5sum(filepath);
+        set.insert(md5);
+        fileToMd5Map.insert(file, md5);
     }
 
     d->md5HashSet[folder] = set;
+
+    // write hash file if needed
+    if (!hashIntegrity) {
+        if (hashFile.open(QFile::WriteOnly | QFile::Truncate)) {
+            QTextStream stream(&hashFile);
+            for (auto i = fileToMd5Map.cbegin(), end = fileToMd5Map.cend(); i != end; ++i) {
+                stream << i.key() << "," << i.value() << "\n";
+            }
+            hashFile.close();
+        }
+        else {
+            qWarning() << "failed writing hash file" << hashFile.fileName();
+        }
+    }
+
+    qDebug() << "initializing done";
 }
 
 //--------------------------------------------------------------------------------------

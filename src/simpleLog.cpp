@@ -22,7 +22,7 @@ void SimpleLog::log( eLogLevel level, const QString& msg )
 {
     QMutexLocker locker(&mutex);
 
-    //std::cout << msg.toStdString() << std::endl;
+    std::cout << msg.toStdString() << std::endl;
 
     QString outMsg = levelToString(level) + " (" + QDateTime::currentDateTime().toString("yyyy/MM/dd-hh:mm:ss") + ") " + msg;
 

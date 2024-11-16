@@ -10,6 +10,7 @@
 
 #include <QtGui>
 #include <QtWidgets>
+#include <iostream>
 
 void redirectMessageOutput(QtMsgType type, const QMessageLogContext& ctx, const QString &msg)
 {
