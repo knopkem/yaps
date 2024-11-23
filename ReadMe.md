@@ -8,6 +8,8 @@ Download the [installer] (http://sourceforge.net/projects/yapsyetanotherphotosor
 or
 Visit [website] (http://knopkem.github.io/yaps/)
 
+Update: use the latest release from the release page (zip file only, no installer yet)
+
 # Purpose
 
 If you are like me and have a heap of photos and videos in randomly named folders laying on your hard disk this tool might be something for you  (provided you don't like it that way). It takes your photos and nicely sorts them into a new folder structure auto generated on the criteria you chose. For example like this:
