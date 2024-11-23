@@ -72,6 +72,12 @@ protected:
 
     bool copyOrMoveFile(const QString& source, const QString& target, const FileOptions& options);
 
+    void writeHashFiles();
+
+    void writeHashFile(const QString& folder, const QHash<QString, QString>& fileToMd5Map);
+
+    bool checkHashIntegrity(const QString& folder);
+
     void reset();
 
 private:

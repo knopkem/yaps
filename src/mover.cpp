@@ -24,6 +24,8 @@ struct AddWrapper {
 namespace {
     QString DUPLICATES_FOLDER = "[Duplicates]";
     QString NOEXIFDATA_FOLDER = "[NoExifData]";
+    QString HASH_FILE_NAME = "hash.txt";
+    QString INVALID_CHECKSUM = "invalid_check_sum";
 }
 
 //--------------------------------------------------------------------------------------
@@ -34,8 +36,7 @@ public:
     QString appPath;
     QString currentTarget;
     QString sourcePath;
-    QHash<QString, QSet<QString> > md5HashSet;
-    QHash<QString,QString> fileHash;
+    QHash<QString, QHash<QString, QString> > md5HashSet;
     ExifWrapper* wrapper;
 
     ReportDetail report;
@@ -92,6 +93,9 @@ bool Mover::performOperations(const QString &source, const QString &target, cons
 
     // now copy or move
     bool result = performFileOperation(parsedData, target, options, format);
+
+    // update hash files
+    this->writeHashFiles();
 
     SimpleLog::stopFileLogging();
 
@@ -173,19 +177,19 @@ QList<ExifData> Mover::parseFiles( const QStringList& files, const FileOptions& 
     
     // Create a QFutureWatcher and connect signals and slots.
     // Monitor progress changes of the future
-    QFutureWatcher<void> futureWatcher;
-    QObject::connect(&futureWatcher, SIGNAL(finished()), &progress, SLOT(reset()));
-    QObject::connect(&progress, SIGNAL(canceled()), &futureWatcher, SLOT(cancel()));
-    QObject::connect(&futureWatcher, SIGNAL(progressRangeChanged(int,int)), &progress, SLOT(setRange(int,int)));
-    QObject::connect(&futureWatcher, SIGNAL(progressValueChanged(int)), &progress, SLOT(setValue(int)));
+    QFutureWatcher<void> watcher;
+    connect(&watcher, &QFutureWatcher<void>::finished, &progress, &QProgressDialog::reset);
+    connect(&watcher, &QFutureWatcher<void>::progressRangeChanged, &progress, &QProgressDialog::setRange);
+    connect(&watcher, &QFutureWatcher<void>::progressValueChanged, &progress, &QProgressDialog::setValue);
+    connect(&progress, &QProgressDialog::canceled, &watcher, &QFutureWatcher<void>::cancel);
 
     // Start the computation.
-    futureWatcher.setFuture(QtConcurrent::map(parsedData, *d->wrap));
+    watcher.setFuture(QtConcurrent::map(parsedData, *d->wrap));
 
     // Display the dialog and start the event loop.
     progress.exec();
 
-    futureWatcher.waitForFinished();
+    watcher.waitForFinished();
 
     qDebug() << "parsing finished";
 
@@ -284,8 +288,6 @@ bool Mover::copyOrMoveFile( const QString& source, const QString& target, const 
             original.remove(source);
         }
         return true;
-        // finalTarget = proposeNewFilename(finalTarget);
-        // qWarning() << "file already exists (" << finalTarget << " )  creating new name:" << finalTarget;
     }
 
 
@@ -479,6 +481,7 @@ QString Mover::md5sum( const QString& filepath )
 
     if (!file.exists()) {
         qWarning() << "file doesn't exist at location" << filepath;
+        return INVALID_CHECKSUM;
     }
 
     if (file.open(QIODevice::ReadOnly)) {
@@ -488,7 +491,7 @@ QString Mover::md5sum( const QString& filepath )
         return hashData.toHex();
     }
     qWarning() << "[md5sum] unable to read file" << filepath;
-    return QString();
+    return INVALID_CHECKSUM;
 }
 
 //--------------------------------------------------------------------------------------
@@ -499,16 +502,16 @@ bool Mover::hasDuplicateHash( const QString& folder, const QString& filepath )
         return false;
     }
 
-    QSet<QString> set = d->md5HashSet.value(folder);
-
+    QHash<QString, QString> set = d->md5HashSet.value(folder);
     QString md5 = md5sum(filepath);
 
-    bool result = set.contains(md5);
-    if (!result) {
-        set.insert(md5);
+    QString result = set.value(md5, "");
+    if (result.isEmpty()) {
+        QFileInfo info(filepath);
+        set.insert(info.fileName(), md5);
         d->md5HashSet[folder] = set;
     }
-    return result;
+    return !result.isEmpty();
 }
 
 //--------------------------------------------------------------------------------------
@@ -522,87 +525,87 @@ void Mover::initializeFolder( const QString& folder )
         return;
     }
 
-    bool hashIntegrity = true;
-    QFile hashFile(folder + "/hash.txt");
+    bool hashIntegrity = this->checkHashIntegrity(folder);
+ 
 
-    {
+    // if hash integrity is not given rehash
+    if (!hashIntegrity) {
+
+        // find all files
         QDir dir(folder);
         QStringList files = dir.entryList(QDir::Files | QDir::NoDotAndDotDot);
 
-        if (files.count() > 0) {
+        if (!files.empty()) {
+            qDebug() << "initializing folder " << folder << " with" << files.count() << "files";
 
-            QSet<QString> set;
-            if (hashFile.open(QIODevice::ReadOnly)) {
-                QTextStream in(&hashFile);
-
-                while (!in.atEnd()) {
-                    QString line = in.readLine();
-                    QStringList fields = line.split(",");
-                    if (fields.count() == 2) {
-                        QString filename = fields.at(0);
-                        QString md5 = fields.at(1);
-                        set.insert(md5);
-                        d->md5HashSet[folder] = set;
-                        // check that each file exists in the hashfile
-                        if (!files.contains(filename)) {
-                            hashIntegrity = false;
-                            qWarning() << filename << " not found in hashfile";
-                        }
-                    }
-                }
-
-                hashFile.close();
+            // hash them and update global hashset
+            QHash<QString, QString> set;
+            foreach(const QString & file, files) {
+                QString filepath = folder + "/" + file;
+                QString md5 = md5sum(filepath);
+                set.insert(file, md5);
             }
-            else {
-                qWarning() << "no hash file found " << hashFile.fileName();
+            d->md5HashSet[folder] = set;
+        }
+    }
+}
+
+//--------------------------------------------------------------------------------------
+
+bool Mover::checkHashIntegrity(const QString& folder) 
+{
+    QDir dir(folder);
+    QStringList files = dir.entryList(QDir::Files | QDir::NoDotAndDotDot);
+    if (files.isEmpty()) return true;
+    files.removeAll(HASH_FILE_NAME);
+
+    QFile hashFile(folder + "/" + HASH_FILE_NAME);
+    if (!hashFile.exists()) return false;
+
+    QHash<QString, QString> set;
+    if (!hashFile.open(QIODevice::ReadOnly)) {
+        qWarning() << "could not open hash file: " << folder << "/" << HASH_FILE_NAME;
+        return false;
+    }
+    QTextStream in(&hashFile);
+    bool hashIntegrity = true;
+    QStringList filesInHash;
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        QStringList fields = line.split(",");
+        if (fields.count() == 2) {
+            QString filename = fields.at(0);
+            QString md5 = fields.at(1);
+            if (md5 == INVALID_CHECKSUM) {
                 hashIntegrity = false;
+                qWarning() << filename << " : " << INVALID_CHECKSUM;
+                break;
             }
+            set.insert(filename, md5);
+            filesInHash.push_back(filename);
         }
         else {
             hashIntegrity = false;
-        }
-
-        if (d->md5HashSet.contains(folder) && hashIntegrity) {
-            qDebug() << "initialized successfully from hash";
-            return;
+            qWarning() << "invalid hash structure";
         }
     }
+    hashFile.close();
 
-    // find all files
-    QDir dir(folder);
-    QStringList files = dir.entryList(QDir::Files | QDir::NoDotAndDotDot);
-
-    if (!files.empty()) {
-        qDebug() << "initializing folder with" << files.count() << "files";
-    }
-
-    // hash them
-    QSet<QString> set;
-    QMap<QString, QString> fileToMd5Map;
-    foreach(const QString& file, files) {
-        QString filepath = folder + "/" + file;
-        QString md5 = md5sum(filepath);
-        set.insert(md5);
-        fileToMd5Map.insert(file, md5);
-    }
-
-    d->md5HashSet[folder] = set;
-
-    // write hash file if needed
-    if (!hashIntegrity) {
-        if (hashFile.open(QFile::WriteOnly | QFile::Truncate)) {
-            QTextStream stream(&hashFile);
-            for (auto i = fileToMd5Map.cbegin(), end = fileToMd5Map.cend(); i != end; ++i) {
-                stream << i.key() << "," << i.value() << "\n";
-            }
-            hashFile.close();
-        }
-        else {
-            qWarning() << "failed writing hash file" << hashFile.fileName();
+    // check that each file exists in the hashfile
+    for (const auto& i : files) {
+        if (!filesInHash.contains(i)) {
+            hashIntegrity = false;
+            qWarning() << i << " not found in hashfile";
+            break;
         }
     }
 
-    qDebug() << "initializing done";
+    if (hashIntegrity) {
+        qDebug() << "successfully initialized " << folder << " from hash file";
+        d->md5HashSet[folder] = set;
+    }
+
+    return hashIntegrity;
 }
 
 //--------------------------------------------------------------------------------------
@@ -610,7 +613,6 @@ void Mover::initializeFolder( const QString& folder )
 void Mover::reset()
 {
     d->md5HashSet.clear();
-    d->fileHash.clear();
 
     d->report.Duplicates = 0;
     d->report.FilesCopied = 0;
@@ -621,3 +623,28 @@ void Mover::reset()
 
 //--------------------------------------------------------------------------------------
 
+void Mover::writeHashFiles() 
+{
+    for (auto it = d->md5HashSet.cbegin(), end = d->md5HashSet.cend(); it != end; ++it) {
+        auto folder = it.key();
+        auto fileToMd5Map = it.value();
+        this->writeHashFile(folder, fileToMd5Map);
+    }
+}
+//--------------------------------------------------------------------------------------
+
+void Mover::writeHashFile(const QString& folder, const QHash<QString, QString>& fileToMd5Map)
+{
+    auto hashFile = QFile(folder + "/" + HASH_FILE_NAME);
+    if (hashFile.open(QFile::WriteOnly | QFile::Truncate)) {
+        QTextStream stream(&hashFile);
+        for (auto i = fileToMd5Map.cbegin(), end = fileToMd5Map.cend(); i != end; ++i) {
+            stream << i.key() << "," << i.value() << "\n";
+        }
+        hashFile.resize(hashFile.pos());
+        hashFile.close();
+        return;
+    }
+    qWarning() << "failed writing hash file" << hashFile.fileName();
+}
+//--------------------------------------------------------------------------------------
