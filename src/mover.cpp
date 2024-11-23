@@ -518,10 +518,7 @@ bool Mover::hasDuplicateHash( const QString& folder, const QString& filepath )
 
 void Mover::initializeFolder( const QString& folder )
 {
-    qDebug() << "initializing folder " << folder;
-
     if (d->md5HashSet.contains(folder)) {
-        qDebug() << "already initialized";
         return;
     }
 
